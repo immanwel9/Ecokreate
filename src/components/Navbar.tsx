@@ -2,7 +2,17 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const navLinks = ["Home", "About", "Services", "Case Studies"];
+const navLinks = [
+  { label: "Home", href: "#home" },
+  { label: "About", href: "#about" },
+  { label: "Services", href: "#services" },
+  { label: "Case Studies", href: "#case-studies" },
+];
+
+const scrollTo = (href: string) => {
+  const el = document.querySelector(href);
+  if (el) el.scrollIntoView({ behavior: "smooth" });
+};
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -19,17 +29,20 @@ const Navbar = () => {
 
         <nav className="hidden md:flex items-center gap-1 bg-card rounded-full px-2 py-1.5 border border-border shadow-sm">
           {navLinks.map((link) => (
-            <a
-              key={link}
-              href="#"
+            <button
+              key={link.label}
+              onClick={() => scrollTo(link.href)}
               className="px-4 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors rounded-full hover:bg-secondary"
             >
-              {link}
-            </a>
+              {link.label}
+            </button>
           ))}
         </nav>
 
-        <Button className="hidden md:inline-flex rounded-full px-6">
+        <Button
+          className="hidden md:inline-flex rounded-full px-6"
+          onClick={() => scrollTo("#cta")}
+        >
           Contact Us
         </Button>
 
@@ -44,15 +57,17 @@ const Navbar = () => {
       {mobileOpen && (
         <div className="md:hidden bg-card border-t border-border p-4 space-y-2">
           {navLinks.map((link) => (
-            <a
-              key={link}
-              href="#"
-              className="block px-4 py-2 text-sm font-medium text-foreground/70 hover:text-foreground rounded-lg hover:bg-secondary"
+            <button
+              key={link.label}
+              onClick={() => { scrollTo(link.href); setMobileOpen(false); }}
+              className="block w-full text-left px-4 py-2 text-sm font-medium text-foreground/70 hover:text-foreground rounded-lg hover:bg-secondary"
             >
-              {link}
-            </a>
+              {link.label}
+            </button>
           ))}
-          <Button className="w-full rounded-full mt-2">Contact Us</Button>
+          <Button className="w-full rounded-full mt-2" onClick={() => { scrollTo("#cta"); setMobileOpen(false); }}>
+            Contact Us
+          </Button>
         </div>
       )}
     </header>
