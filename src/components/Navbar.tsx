@@ -1,0 +1,62 @@
+import { useState } from "react";
+import { Menu, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+const navLinks = ["Home", "About", "Services", "Case Studies"];
+
+const Navbar = () => {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  return (
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md">
+      <div className="container mx-auto flex items-center justify-between py-4 px-6">
+        <div className="flex items-center gap-2">
+          <div className="h-7 w-7 rounded-md bg-primary flex items-center justify-center">
+            <span className="text-primary-foreground text-sm font-bold">✦</span>
+          </div>
+          <span className="text-lg font-bold text-foreground">impact</span>
+        </div>
+
+        <nav className="hidden md:flex items-center gap-1 bg-card rounded-full px-2 py-1.5 border border-border shadow-sm">
+          {navLinks.map((link) => (
+            <a
+              key={link}
+              href="#"
+              className="px-4 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors rounded-full hover:bg-secondary"
+            >
+              {link}
+            </a>
+          ))}
+        </nav>
+
+        <Button className="hidden md:inline-flex rounded-full px-6">
+          Contact Us
+        </Button>
+
+        <button
+          className="md:hidden p-2"
+          onClick={() => setMobileOpen(!mobileOpen)}
+        >
+          {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+      </div>
+
+      {mobileOpen && (
+        <div className="md:hidden bg-card border-t border-border p-4 space-y-2">
+          {navLinks.map((link) => (
+            <a
+              key={link}
+              href="#"
+              className="block px-4 py-2 text-sm font-medium text-foreground/70 hover:text-foreground rounded-lg hover:bg-secondary"
+            >
+              {link}
+            </a>
+          ))}
+          <Button className="w-full rounded-full mt-2">Contact Us</Button>
+        </div>
+      )}
+    </header>
+  );
+};
+
+export default Navbar;
