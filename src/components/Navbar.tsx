@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -9,29 +10,42 @@ const navLinks = [
   { label: "Case Studies", href: "#case-studies" },
 ];
 
-const scrollTo = (href: string) => {
-  const el = document.querySelector(href);
-  if (el) el.scrollIntoView({ behavior: "smooth" });
-};
-
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleNavClick = (href: string) => {
+    if (location.pathname !== "/") {
+      navigate("/" + href);
+    } else {
+      const el = document.querySelector(href);
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const handleContactClick = () => {
+    navigate("/contact");
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md">
       <div className="container mx-auto flex items-center justify-between py-4 px-6">
-        <div className="flex items-center gap-2">
+        <button
+          onClick={() => navigate("/")}
+          className="flex items-center gap-2"
+        >
           <div className="h-7 w-7 rounded-md bg-primary flex items-center justify-center">
             <span className="text-primary-foreground text-sm font-bold">✦</span>
           </div>
           <span className="text-lg font-bold text-foreground">impact</span>
-        </div>
+        </button>
 
         <nav className="hidden md:flex items-center gap-1 bg-card rounded-full px-2 py-1.5 border border-border shadow-sm">
           {navLinks.map((link) => (
             <button
               key={link.label}
-              onClick={() => scrollTo(link.href)}
+              onClick={() => handleNavClick(link.href)}
               className="px-4 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors rounded-full hover:bg-secondary"
             >
               {link.label}
@@ -41,7 +55,7 @@ const Navbar = () => {
 
         <Button
           className="hidden md:inline-flex rounded-full px-6"
-          onClick={() => scrollTo("#cta")}
+          onClick={handleContactClick}
         >
           Contact Us
         </Button>
@@ -59,13 +73,13 @@ const Navbar = () => {
           {navLinks.map((link) => (
             <button
               key={link.label}
-              onClick={() => { scrollTo(link.href); setMobileOpen(false); }}
+              onClick={() => { handleNavClick(link.href); setMobileOpen(false); }}
               className="block w-full text-left px-4 py-2 text-sm font-medium text-foreground/70 hover:text-foreground rounded-lg hover:bg-secondary"
             >
               {link.label}
             </button>
           ))}
-          <Button className="w-full rounded-full mt-2" onClick={() => { scrollTo("#cta"); setMobileOpen(false); }}>
+          <Button className="w-full rounded-full mt-2" onClick={() => { handleContactClick(); setMobileOpen(false); }}>
             Contact Us
           </Button>
         </div>
