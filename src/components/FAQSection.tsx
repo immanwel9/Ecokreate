@@ -9,54 +9,59 @@ import { motion } from "framer-motion";
 const faqs = [
   {
     q: "How long does a typical project take?",
-    a: "On average, branding projects take 4-6 weeks, while web design and development projects can range from 8-12 weeks. We provide a detailed timeline and keep you informed throughout the project.",
+    a: "Branding projects take 4–6 weeks, while web design and development projects range from 8–12 weeks. We provide a detailed timeline upfront.",
   },
   {
     q: "What is the cost of working with you?",
-    a: "Our pricing varies based on the scope and complexity of each project. We offer transparent pricing and provide detailed proposals so you know exactly what to expect.",
+    a: "Pricing varies by scope and complexity. We offer transparent proposals so you know exactly what to expect before we begin.",
   },
   {
     q: "How involved will I be in the process?",
-    a: "We believe in a collaborative approach. You'll be involved at every key milestone, from initial concepts to final delivery, ensuring the result aligns with your vision.",
+    a: "Very. We follow a collaborative approach — you'll be involved at every key milestone, from concept to delivery.",
   },
   {
     q: "Can you work with my existing brand?",
-    a: "Absolutely! We can work with your existing brand guidelines to refresh, evolve, or extend your brand identity while maintaining consistency.",
+    a: "Absolutely. We can refresh, evolve, or extend your existing brand identity while maintaining consistency across all touchpoints.",
   },
 ];
 
 const FAQSection = () => {
   return (
-    <section className="py-20 px-6">
-      <div className="container mx-auto max-w-3xl">
+    <section className="py-32 px-6">
+      <div className="container mx-auto max-w-2xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-12"
+          className="mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Your questions, answered
+          <p className="text-sm tracking-[0.3em] uppercase text-muted-foreground mb-4">FAQ</p>
+          <h2 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight">
+            Common questions
           </h2>
-          <p className="text-muted-foreground">
-            Whether you're a new client or a long-time partner, we're here to help. Below are answers to the most common questions.
-          </p>
         </motion.div>
 
-        <Accordion type="single" collapsible className="space-y-3">
+        <Accordion type="single" collapsible className="space-y-0">
           {faqs.map((faq, i) => (
-            <AccordionItem
+            <motion.div
               key={i}
-              value={`item-${i}`}
-              className="bg-card rounded-xl border border-border px-6 data-[state=open]:shadow-sm"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.05 }}
             >
-              <AccordionTrigger className="text-left font-semibold text-foreground hover:no-underline">
-                {faq.q}
-              </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground">
-                {faq.a}
-              </AccordionContent>
-            </AccordionItem>
+              <AccordionItem
+                value={`item-${i}`}
+                className="border-b border-border px-0"
+              >
+                <AccordionTrigger className="text-left font-medium text-foreground hover:no-underline py-6 text-base">
+                  {faq.q}
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground pb-6 leading-relaxed">
+                  {faq.a}
+                </AccordionContent>
+              </AccordionItem>
+            </motion.div>
           ))}
         </Accordion>
       </div>

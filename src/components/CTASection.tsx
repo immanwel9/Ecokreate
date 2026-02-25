@@ -1,39 +1,40 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import ctaBike from "@/assets/cta-bike.jpg";
-import ctaApp from "@/assets/cta-app.jpg";
-import ctaDesk from "@/assets/cta-desk.jpg";
+import { ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const CTASection = () => {
-  return (
-    <section className="py-20 px-6">
-      <div className="container mx-auto">
-        <div className="grid grid-cols-3 gap-4 max-w-2xl mx-auto mb-12">
-          {[ctaBike, ctaApp, ctaDesk].map((src, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="rounded-2xl overflow-hidden aspect-[3/4]"
-            >
-              <img src={src} alt="" className="w-full h-full object-cover" />
-            </motion.div>
-          ))}
-        </div>
+  const navigate = useNavigate();
 
+  return (
+    <section className="py-32 px-6">
+      <div className="container mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center"
+          transition={{ duration: 0.6 }}
+          className="bg-foreground rounded-3xl px-8 py-20 md:px-20 md:py-28 text-center relative overflow-hidden"
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
-            Let's bring your vision to life
+          {/* Subtle grain overlay */}
+          <div className="absolute inset-0 opacity-[0.03] bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSIzMDAiIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iMSIvPjwvc3ZnPg==')]" />
+          
+          <h2 className="text-4xl md:text-6xl font-bold text-background tracking-tight leading-[1.1] mb-6 relative">
+            Ready to make
+            <br />
+            an impact?
           </h2>
-          <Button size="lg" className="rounded-full px-8">
-            Book a discovery call
+          <p className="text-background/60 max-w-md mx-auto mb-10 relative">
+            Let's start a conversation about your brand's next chapter.
+          </p>
+          <Button
+            size="lg"
+            variant="secondary"
+            className="rounded-full px-8 gap-2 relative"
+            onClick={() => navigate("/contact")}
+          >
+            Get in touch
+            <ArrowRight size={16} />
           </Button>
         </motion.div>
       </div>
