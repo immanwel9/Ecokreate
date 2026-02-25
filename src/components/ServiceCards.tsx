@@ -1,45 +1,74 @@
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 import { Pen, Compass, Share2 } from "lucide-react";
-import serviceContent from "@/assets/service-content.jpg";
-import serviceBrand from "@/assets/service-brand.jpg";
-import serviceMarketing from "@/assets/service-marketing.jpg";
 
 const services = [
-  { icon: Pen, title: "Content creation", image: serviceContent },
-  { icon: Compass, title: "Brand strategy", image: serviceBrand },
-  { icon: Share2, title: "Digital marketing", image: serviceMarketing },
+  {
+    icon: Pen,
+    title: "Content Creation",
+    desc: "Compelling copy, visuals, and video that tell your story with clarity and purpose.",
+    num: "01",
+  },
+  {
+    icon: Compass,
+    title: "Brand Strategy",
+    desc: "Deep research and positioning that carve out space in your market.",
+    num: "02",
+  },
+  {
+    icon: Share2,
+    title: "Digital Marketing",
+    desc: "Data-driven campaigns across channels that convert attention into growth.",
+    num: "03",
+  },
 ];
 
 const ServiceCards = () => {
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const x = useTransform(scrollYProgress, [0, 1], ["5%", "-5%"]);
+
   return (
-    <section className="pb-20 px-6">
+    <section ref={ref} className="py-32 px-6">
       <div className="container mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {services.map((service, i) => (
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="text-sm tracking-[0.3em] uppercase text-muted-foreground mb-4"
+        >
+          What we do
+        </motion.p>
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-4xl md:text-5xl font-bold text-foreground tracking-tight mb-16 max-w-lg"
+        >
+          Services built for impact
+        </motion.h2>
+
+        <motion.div style={{ x }} className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border rounded-2xl overflow-hidden">
+          {services.map((s, i) => (
             <motion.div
-              key={service.title}
-              initial={{ opacity: 0, y: 30 }}
+              key={s.title}
+              initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="group cursor-pointer"
+              className="bg-card p-10 group hover:bg-secondary/50 transition-colors duration-500"
             >
-              <div className="rounded-2xl overflow-hidden bg-card border border-border">
-                <div className="h-56 overflow-hidden">
-                  <img
-                    src={service.image}
-                    alt={service.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                </div>
-                <div className="p-5 flex items-center gap-3">
-                  <service.icon size={20} className="text-muted-foreground" />
-                  <span className="font-semibold text-foreground">{service.title}</span>
-                </div>
+              <span className="text-5xl font-bold text-border group-hover:text-primary/20 transition-colors duration-500">
+                {s.num}
+              </span>
+              <div className="mt-8 mb-4">
+                <s.icon size={24} className="text-primary" />
               </div>
+              <h3 className="text-xl font-semibold text-foreground mb-3">{s.title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
