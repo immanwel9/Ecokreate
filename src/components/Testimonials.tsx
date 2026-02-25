@@ -1,66 +1,62 @@
+import { motion } from "framer-motion";
+
 const testimonials = [
   {
-    quote: "They're a true partner in our growth. Their work has been instrumental in helping us reach new heights, and we look forward to continuing our commercial relationship.",
+    quote: "They're a true partner in our growth. Their work has been instrumental in helping us reach new heights.",
     name: "Ryan Martinez",
-    company: "EchoWave Tech",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face",
+    role: "CEO, EchoWave Tech",
   },
   {
-    quote: "Their team took the time to truly understand our vision and delivered a brand identity that exceeded our expectations. The feedback from our customers has been positive.",
+    quote: "Their team took the time to truly understand our vision and delivered a brand identity that exceeded our expectations.",
     name: "Michael Reynolds",
-    company: "Urban Threads",
-    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face",
+    role: "Founder, Urban Threads",
   },
   {
-    quote: "Impact brought our ideas to life in ways we never imagined. Their innovative approach and attention to detail made our project a huge success. Highly recommended.",
+    quote: "Impact brought our ideas to life in ways we never imagined. Their innovative approach made our project a huge success.",
     name: "David Lawson",
-    company: "GreenLeaf Organics",
-    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&h=80&fit=crop&crop=face",
-  },
-  {
-    quote: "We came with a challenge, and they delivered beyond our expectations. Their team was not only creative but also strategic, helping us navigate the digital landscape with ease.",
-    name: "Ricky Stokes",
-    company: "Vista Ventures",
-    avatar: "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=80&h=80&fit=crop&crop=face",
+    role: "CMO, GreenLeaf Organics",
   },
 ];
 
 const Testimonials = () => {
-  const doubledTestimonials = [...testimonials, ...testimonials];
-
   return (
-    <section className="py-20 overflow-hidden">
-      <div className="container mx-auto px-6 mb-12 text-center">
-        <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-          Trusted by industry leaders and loved by clients
-        </h2>
-        <p className="text-muted-foreground max-w-2xl mx-auto">
-          At Impact, our clients' success stories are our greatest achievement. Hear what our partners have to say.
-        </p>
-      </div>
+    <section className="py-32 px-6 bg-card">
+      <div className="container mx-auto">
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="text-sm tracking-[0.3em] uppercase text-muted-foreground mb-4"
+        >
+          Testimonials
+        </motion.p>
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-4xl md:text-5xl font-bold text-foreground tracking-tight mb-20 max-w-lg"
+        >
+          What our clients say
+        </motion.h2>
 
-      <div className="relative">
-        <div className="flex animate-scroll-left gap-6 w-max">
-          {doubledTestimonials.map((t, i) => (
-            <div
-              key={i}
-              className="w-[380px] flex-shrink-0 bg-card rounded-2xl border border-border p-6"
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border rounded-2xl overflow-hidden">
+          {testimonials.map((t, i) => (
+            <motion.div
+              key={t.name}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+              className="bg-card p-10 flex flex-col justify-between"
             >
-              <p className="text-sm text-foreground/80 mb-6 leading-relaxed">
+              <p className="text-foreground/80 leading-relaxed mb-10 text-lg italic">
                 "{t.quote}"
               </p>
-              <div className="flex items-center gap-3">
-                <img
-                  src={t.avatar}
-                  alt={t.name}
-                  className="w-10 h-10 rounded-full object-cover"
-                />
-                <div>
-                  <p className="text-sm font-semibold text-foreground">{t.name}</p>
-                  <p className="text-xs text-muted-foreground">{t.company}</p>
-                </div>
+              <div>
+                <p className="font-semibold text-foreground text-sm">{t.name}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{t.role}</p>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

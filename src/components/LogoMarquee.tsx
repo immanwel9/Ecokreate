@@ -1,22 +1,19 @@
-const logos = ["Acme Co", "Globex", "Initech", "Umbrella", "Wayne Corp"];
+import { motion } from "framer-motion";
+
+const logos = ["Acme", "Globex", "Initech", "Umbrella", "Wayne", "Stark", "Oscorp", "Lexcorp"];
 
 const LogoMarquee = () => {
   return (
-    <section className="py-12 overflow-hidden">
-      <p className="text-center text-sm text-muted-foreground mb-8">
-        Trusted by industry leaders
-      </p>
+    <section className="py-16 border-y border-border overflow-hidden">
       <div className="relative">
         <div className="flex animate-marquee whitespace-nowrap">
           {[...logos, ...logos, ...logos].map((name, i) => (
-            <div
+            <span
               key={i}
-              className="mx-12 flex items-center justify-center opacity-40 hover:opacity-70 transition-opacity"
+              className="mx-16 text-2xl font-bold tracking-tight text-foreground/10"
             >
-              <span className="text-xl font-bold text-foreground tracking-tight">
-                {name}
-              </span>
-            </div>
+              {name}
+            </span>
           ))}
         </div>
       </div>

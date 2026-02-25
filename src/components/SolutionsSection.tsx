@@ -1,61 +1,66 @@
-import { motion } from "framer-motion";
-import { Lightbulb, Zap, Users } from "lucide-react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
+import aboutSocial from "@/assets/about-social.jpg";
 import projects from "@/assets/projects.jpg";
 
-const features = [
-  { icon: Lightbulb, title: "Tailored solutions", desc: "We take the time to understand your specific needs, challenges, and goals." },
-  { icon: Zap, title: "Innovative thinking", desc: "We thrive on pushing boundaries, exploring ideas, and staying ahead of trends." },
-  { icon: Users, title: "Collaborative approach", desc: "From the initial concept to the final delivery, we work closely with you." },
-];
-
 const SolutionsSection = () => {
-  return (
-    <section className="py-20 px-6">
-      <div className="container mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-12"
-        >
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Impactful solutions
-          </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            We focus on more than just delivering a service; we create solutions that make a difference. Each project is crafted to align with your goals, bringing impact to the forefront.
-          </p>
-        </motion.div>
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const y1 = useTransform(scrollYProgress, [0, 1], ["0%", "-8%"]);
+  const y2 = useTransform(scrollYProgress, [0, 1], ["0%", "8%"]);
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+  return (
+    <section ref={ref} className="py-32 px-6">
+      <div className="container mx-auto">
+        <div className="text-center mb-20">
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            className="rounded-2xl overflow-hidden"
+            className="text-sm tracking-[0.3em] uppercase text-muted-foreground mb-4"
           >
-            <img src={projects} alt="Agency work" className="w-full h-80 object-cover rounded-2xl" />
+            Our work
+          </motion.p>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-4xl md:text-5xl font-bold text-foreground tracking-tight"
+          >
+            Selected projects
+          </motion.h2>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <motion.div style={{ y: y1 }} className="rounded-2xl overflow-hidden group cursor-pointer">
+            <div className="relative overflow-hidden">
+              <img
+                src={aboutSocial}
+                alt="Brand campaign"
+                className="w-full h-[400px] object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/20 transition-colors duration-500" />
+            </div>
+            <div className="pt-4">
+              <p className="text-xs text-muted-foreground tracking-widest uppercase mb-1">Brand Strategy</p>
+              <h3 className="text-lg font-semibold text-foreground">EchoWave Tech — Visual Identity</h3>
+            </div>
           </motion.div>
 
-          <div className="space-y-6">
-            {features.map((f, i) => (
-              <motion.div
-                key={f.title}
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="flex gap-4"
-              >
-                <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center flex-shrink-0">
-                  <f.icon size={20} className="text-primary" />
-                </div>
-                <div>
-                  <h4 className="font-semibold text-foreground mb-1">{f.title}</h4>
-                  <p className="text-sm text-muted-foreground">{f.desc}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+          <motion.div style={{ y: y2 }} className="rounded-2xl overflow-hidden group cursor-pointer mt-0 md:mt-16">
+            <div className="relative overflow-hidden">
+              <img
+                src={projects}
+                alt="Marketing campaign"
+                className="w-full h-[400px] object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/20 transition-colors duration-500" />
+            </div>
+            <div className="pt-4">
+              <p className="text-xs text-muted-foreground tracking-widest uppercase mb-1">Digital Campaign</p>
+              <h3 className="text-lg font-semibold text-foreground">Urban Threads — Growth Strategy</h3>
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>
