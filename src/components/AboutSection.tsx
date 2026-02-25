@@ -48,9 +48,8 @@ const AboutSection = () => {
               measurable results
             </h2>
             <p className="text-muted-foreground leading-relaxed mb-10 max-w-lg">
-              We're a team of strategists, designers, and storytellers who believe in the power of purposeful branding. Every project is an opportunity to create something meaningful.
-            </p>
-
+              We’re a team of designers and brand architects who believe in the power of purposeful branding. Every project is an opportunity to create something meaningful—and we monetize that meaning by transforming your core values into measurable brand equity and market growth.
+</p>
             <div className="grid grid-cols-3 gap-8">
               {stats.map((s, i) => (
                 <motion.div
