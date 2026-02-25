@@ -5,9 +5,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
+import { ArrowRight } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import contactImage from "@/assets/contact-workspace.jpg";
 
 const contactSchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(100),
@@ -39,73 +39,69 @@ const Contact = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <section className="pt-32 pb-20 px-6">
-        <div className="container mx-auto max-w-5xl">
+      <section className="pt-40 pb-32 px-6">
+        <div className="container mx-auto max-w-2xl">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="bg-card rounded-2xl border border-border overflow-hidden grid grid-cols-1 lg:grid-cols-2"
           >
-            {/* Form */}
-            <div className="p-8 md:p-12">
-              <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-                Get in touch
-              </h1>
-              <p className="text-muted-foreground mb-10">
-                Whether you're ready to kick off a new project, have questions about our services, we'd love to hear from you!
-              </p>
-
-              <form onSubmit={handleSubmit} className="space-y-5">
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-1.5">Name</label>
-                  <Input
-                    placeholder="Jane Smith"
-                    value={form.name}
-                    onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    className="bg-background"
-                  />
-                  {errors.name && <p className="text-destructive text-xs mt-1">{errors.name}</p>}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-1.5">Email</label>
-                  <Input
-                    placeholder="jane@framer.com"
-                    value={form.email}
-                    onChange={(e) => setForm({ ...form, email: e.target.value })}
-                    className="bg-background"
-                  />
-                  {errors.email && <p className="text-destructive text-xs mt-1">{errors.email}</p>}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-1.5">Message</label>
-                  <Textarea
-                    placeholder="Message"
-                    rows={4}
-                    value={form.message}
-                    onChange={(e) => setForm({ ...form, message: e.target.value })}
-                    className="bg-background resize-y"
-                  />
-                  {errors.message && <p className="text-destructive text-xs mt-1">{errors.message}</p>}
-                </div>
-
-                <Button type="submit" className="w-full rounded-lg">
-                  Submit
-                </Button>
-              </form>
-            </div>
-
-            {/* Image */}
-            <div className="hidden lg:block">
-              <img
-                src={contactImage}
-                alt="Creative workspace"
-                className="w-full h-full object-cover"
-              />
-            </div>
+            <p className="text-sm tracking-[0.3em] uppercase text-muted-foreground mb-4">Contact</p>
+            <h1 className="text-5xl md:text-6xl font-bold text-foreground tracking-tight mb-4">
+              Let's talk
+            </h1>
+            <p className="text-muted-foreground mb-12 max-w-md">
+              Have a project in mind? We'd love to hear about it. Fill out the form below and we'll get back to you within 24 hours.
+            </p>
           </motion.div>
+
+          <motion.form
+            onSubmit={handleSubmit}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.15 }}
+            className="space-y-6"
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-xs tracking-widest uppercase text-muted-foreground mb-2">Name</label>
+                <Input
+                  placeholder="Jane Smith"
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  className="bg-card border-border h-12"
+                />
+                {errors.name && <p className="text-destructive text-xs mt-1">{errors.name}</p>}
+              </div>
+              <div>
+                <label className="block text-xs tracking-widest uppercase text-muted-foreground mb-2">Email</label>
+                <Input
+                  placeholder="jane@company.com"
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  className="bg-card border-border h-12"
+                />
+                {errors.email && <p className="text-destructive text-xs mt-1">{errors.email}</p>}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs tracking-widest uppercase text-muted-foreground mb-2">Message</label>
+              <Textarea
+                placeholder="Tell us about your project..."
+                rows={6}
+                value={form.message}
+                onChange={(e) => setForm({ ...form, message: e.target.value })}
+                className="bg-card border-border resize-y"
+              />
+              {errors.message && <p className="text-destructive text-xs mt-1">{errors.message}</p>}
+            </div>
+
+            <Button type="submit" className="rounded-full px-8 gap-2">
+              Send message
+              <ArrowRight size={16} />
+            </Button>
+          </motion.form>
         </div>
       </section>
       <Footer />
