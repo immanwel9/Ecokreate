@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const navLinks = [
@@ -13,6 +13,13 @@ const navLinks = [
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [dark, setDark] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("theme") === "dark" ||
+        (!localStorage.getItem("theme") && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+    return false;
+  });
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -21,6 +28,11 @@ const Navbar = () => {
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", dark);
+    localStorage.setItem("theme", dark ? "dark" : "light");
+  }, [dark]);
 
   const handleNavClick = (href: string) => {
     if (location.pathname !== "/") {
@@ -57,16 +69,34 @@ const Navbar = () => {
           ))}
         </nav>
 
-        <Button
-          className="hidden md:inline-flex rounded-full px-6"
-          onClick={() => navigate("/contact")}
-        >
-          Contact Us
-        </Button>
+        <div className="hidden md:flex items-center gap-3">
+          <button
+            onClick={() => setDark(!dark)}
+            className="p-2 rounded-full text-foreground/60 hover:text-foreground hover:bg-secondary transition-colors"
+            aria-label="Toggle dark mode"
+          >
+            {dark ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
+          <Button
+            className="rounded-full px-6"
+            onClick={() => navigate("/contact")}
+          >
+            Contact Us
+          </Button>
+        </div>
 
-        <button className="md:hidden p-2" onClick={() => setMobileOpen(!mobileOpen)}>
-          {mobileOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        <div className="md:hidden flex items-center gap-2">
+          <button
+            onClick={() => setDark(!dark)}
+            className="p-2 rounded-full text-foreground/60 hover:text-foreground transition-colors"
+            aria-label="Toggle dark mode"
+          >
+            {dark ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
+          <button className="p-2" onClick={() => setMobileOpen(!mobileOpen)}>
+            {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
 
       {mobileOpen && (

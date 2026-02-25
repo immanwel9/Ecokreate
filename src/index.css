@@ -47,6 +47,45 @@
 
     --font-sans: 'DM Sans', system-ui, sans-serif;
   }
+
+  .dark {
+    --background: 220 20% 7%;
+    --foreground: 210 20% 92%;
+
+    --card: 220 18% 10%;
+    --card-foreground: 210 20% 92%;
+
+    --popover: 220 18% 10%;
+    --popover-foreground: 210 20% 92%;
+
+    --primary: 214 80% 56%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 15% 15%;
+    --secondary-foreground: 210 20% 92%;
+
+    --muted: 220 14% 16%;
+    --muted-foreground: 215 14% 55%;
+
+    --accent: 220 15% 15%;
+    --accent-foreground: 210 20% 92%;
+
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 220 14% 16%;
+    --input: 220 14% 16%;
+    --ring: 214 80% 56%;
+
+    --sidebar-background: 220 18% 8%;
+    --sidebar-foreground: 210 20% 85%;
+    --sidebar-primary: 210 20% 92%;
+    --sidebar-primary-foreground: 220 20% 7%;
+    --sidebar-accent: 220 15% 13%;
+    --sidebar-accent-foreground: 210 20% 85%;
+    --sidebar-border: 220 14% 14%;
+    --sidebar-ring: 214 80% 56%;
+  }
 }
 
 @layer base {
@@ -84,4 +123,9 @@
 
 .animate-scroll-left {
   animation: scroll-left 40s linear infinite;
+}
+
+/* Smooth color transitions for dark mode */
+body, .bg-card, .bg-background, .bg-secondary {
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
