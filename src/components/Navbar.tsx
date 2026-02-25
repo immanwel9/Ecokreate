@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Menu, X, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ const navLinks = [
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [visible, setVisible] = useState(true);
   const [dark, setDark] = useState(() => {
     if (typeof window !== "undefined") {
       return localStorage.getItem("theme") === "dark" ||
@@ -22,12 +23,38 @@ const Navbar = () => {
   });
   const navigate = useNavigate();
   const location = useLocation();
+  const scrollTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 50);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 50);
+      
+      // Only apply auto-hide on non-landing pages
+      if (location.pathname !== "/") {
+        setVisible(true);
+        
+        // Clear existing timer
+        if (scrollTimerRef.current) {
+          clearTimeout(scrollTimerRef.current);
+        }
+        
+        // Set timer to hide navbar after 3 seconds of no scrolling
+        scrollTimerRef.current = setTimeout(() => {
+          setVisible(false);
+        }, 3000);
+      } else {
+        setVisible(true);
+      }
+    };
+    
     window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (scrollTimerRef.current) {
+        clearTimeout(scrollTimerRef.current);
+      }
+    };
+  }, [location.pathname]);
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", dark);
@@ -45,16 +72,17 @@ const Navbar = () => {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-opacity duration-300 ${
         scrolled ? "bg-background/90 backdrop-blur-lg border-b border-border" : "bg-transparent"
-      }`}
+      } ${visible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"}`}
     >
       <div className="container mx-auto flex items-center justify-between py-5 px-6">
         <button onClick={() => navigate("/")} className="flex items-center gap-2">
-          <div className="h-7 w-7 rounded-md bg-primary flex items-center justify-center">
-            <span className="text-primary-foreground text-sm font-bold">✦</span>
-          </div>
-          <span className="text-lg font-bold text-foreground">impact</span>
+          <img 
+            src="/src/assets/Gemini_Generated_Image_9yfzqb9yfzqb9yfz (1).png" 
+            alt="Logo" 
+            className="w-[150px]"
+          />
         </button>
 
         <nav className="hidden md:flex items-center gap-8">

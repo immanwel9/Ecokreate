@@ -13,7 +13,7 @@ const Footer = () => {
               <div className="h-7 w-7 rounded-md bg-primary flex items-center justify-center">
                 <span className="text-primary-foreground text-sm font-bold">✦</span>
               </div>
-              <span className="text-lg font-bold text-foreground">impact</span>
+              <span className="text-lg font-bold text-foreground">Ecokreate</span>
             </button>
             <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">
               Crafting unforgettable digital experiences through strategy, design, and storytelling.
@@ -58,7 +58,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-border pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-muted-foreground">© 2024 Impact. All rights reserved.</p>
+          <p className="text-xs text-muted-foreground">© 2024 Ecokreate. All rights reserved.</p>
         </div>
       </div>
     </footer>
