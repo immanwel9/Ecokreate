@@ -1,23 +1,16 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { ArrowDown } from "lucide-react";
-import workspace from "@/assets/workspace.jpg";
 
 const Hero = () => {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
   const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "15%"]);
 
   return (
     <section ref={ref} className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Parallax background */}
-      <motion.div style={{ y }} className="absolute inset-0 -z-10">
-        <img src={workspace} alt="" className="w-full h-[120%] object-cover" />
-        <div className="absolute inset-0 bg-background/80" />
-      </motion.div>
-
-      <motion.div style={{ opacity }} className="container mx-auto px-6 text-center">
+      <motion.div style={{ opacity, y }} className="container mx-auto px-6 text-center">
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -57,7 +50,7 @@ const Hero = () => {
         >
           <button
             onClick={() => document.getElementById("services")?.scrollIntoView({ behavior: "smooth" })}
-            className="group flex flex-col items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+            className="group flex flex-col items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mx-auto"
           >
             <span className="text-xs tracking-widest uppercase">Scroll</span>
             <ArrowDown size={16} className="animate-bounce" />
