@@ -5,7 +5,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
-import { ArrowRight } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { ArrowRight, Loader2 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -19,8 +20,9 @@ const Contact = () => {
   const { toast } = useToast();
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [sending, setSending] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const result = contactSchema.safeParse(form);
     if (!result.success) {
@@ -32,8 +34,19 @@ const Contact = () => {
       return;
     }
     setErrors({});
-    toast({ title: "Message sent!", description: "We'll get back to you soon." });
-    setForm({ name: "", email: "", message: "" });
+    setSending(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("send-contact-email", {
+        body: { name: form.name, email: form.email, message: form.message },
+      });
+      if (error) throw error;
+      toast({ title: "Message sent!", description: "We'll get back to you soon." });
+      setForm({ name: "", email: "", message: "" });
+    } catch (err) {
+      toast({ title: "Failed to send", description: "Please try again later.", variant: "destructive" });
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -97,9 +110,9 @@ const Contact = () => {
               {errors.message && <p className="text-destructive text-xs mt-1">{errors.message}</p>}
             </div>
 
-            <Button type="submit" className="rounded-full px-8 gap-2">
-              Send message
-              <ArrowRight size={16} />
+            <Button type="submit" className="rounded-full px-8 gap-2" disabled={sending}>
+              {sending ? <Loader2 size={16} className="animate-spin" /> : <ArrowRight size={16} />}
+              {sending ? "Sending..." : "Send message"}
             </Button>
           </motion.form>
         </div>
