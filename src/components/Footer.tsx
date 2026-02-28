@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import logo from "@/assets/Gemini_Generated_Image_9yfzqb9yfzqb9yfz (1).png";
 
 const Footer = () => {
   const navigate = useNavigate();
@@ -9,11 +10,8 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           {/* Brand */}
           <div className="md:col-span-2">
-            <button onClick={() => navigate("/")} className="flex items-center gap-2 mb-4">
-              <div className="h-7 w-7 rounded-md bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground text-sm font-bold">✦</span>
-              </div>
-              <span className="text-lg font-bold text-foreground">Ecokreate</span>
+            <button onClick={() => navigate("/")} className="mb-4">
+              <img src={logo} alt="Ecokreate Logo" className="w-[120px]" />
             </button>
             <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">
               Crafting unforgettable digital experiences through strategy, design, and storytelling.
@@ -58,7 +56,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-border pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-muted-foreground">© 2024 Ecokreate. All rights reserved.</p>
+          <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} Ecokreate. All rights reserved.</p>
         </div>
       </div>
     </footer>
