@@ -129,3 +129,14 @@
 body, .bg-card, .bg-background, .bg-secondary {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Better selection color */
+::selection {
+  background: hsl(var(--primary) / 0.2);
+  color: hsl(var(--foreground));
+}

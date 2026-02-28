@@ -45,7 +45,7 @@ const ServiceCards = () => {
           viewport={{ once: true }}
           className="text-4xl md:text-5xl font-bold text-foreground tracking-tight mb-16 max-w-lg"
         >
-            Monitizing your brand's potential with unforgettable digital experiences
+            Monetizing your brand's potential with unforgettable digital experiences
         </motion.h2>
 
         <motion.div style={{ x }} className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border rounded-2xl overflow-hidden">
