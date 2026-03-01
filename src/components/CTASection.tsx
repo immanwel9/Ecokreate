@@ -14,12 +14,12 @@ const CTASection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="bg-primary rounded-3xl px-8 py-20 md:px-20 md:py-28 text-center relative overflow-hidden"
+          className="bg-primary rounded-3xl px-8 py-20 md:px-16 md:py-24 text-center relative overflow-hidden"
         >
-          <h2 className="text-4xl md:text-6xl font-bold text-primary-foreground tracking-tight leading-[1.1] mb-6 relative">
-            Ready to make your brand an unforgettable experience with
+          <h2 className="text-3xl md:text-5xl font-bold text-primary-foreground tracking-tight leading-[1.1] mb-6 relative">
+            Ready to make your brand
             <br />
-            Ecokreate?
+            unforgettable with Ecokreate?
           </h2>
           <p className="text-primary-foreground/70 max-w-md mx-auto mb-10 relative">
             Let's start a conversation about your brand's next chapter.
