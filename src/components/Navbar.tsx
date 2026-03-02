@@ -9,6 +9,7 @@ const navLinks = [
   { label: "Services", href: "#services" },
   { label: "About", href: "#about" },
   { label: "Work", href: "#case-studies" },
+  { label: "Contact", href: "#contact" },
 ];
 
 const Navbar = () => {
@@ -24,7 +25,7 @@ const Navbar = () => {
   });
   const navigate = useNavigate();
   const location = useLocation();
-  const scrollTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const scrollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const onScroll = () => {
@@ -91,7 +92,7 @@ const Navbar = () => {
           >
             {dark ? <Sun size={18} /> : <Moon size={18} />}
           </button>
-          <Button className="rounded-full px-6" onClick={() => navigate("/contact")}>
+          <Button className="rounded-full px-6" onClick={() => handleNavClick("#contact")}>
             Contact Us
           </Button>
         </div>
@@ -121,7 +122,7 @@ const Navbar = () => {
               {link.label}
             </button>
           ))}
-          <Button className="w-full rounded-full mt-4" onClick={() => { navigate("/contact"); setMobileOpen(false); }}>
+          <Button className="w-full rounded-full mt-4" onClick={() => { handleNavClick("#contact"); setMobileOpen(false); }}>
             Contact Us
           </Button>
         </div>
