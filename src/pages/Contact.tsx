@@ -5,7 +5,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
-import { supabase } from "@/integrations/supabase/client";
 import { ArrowRight, Loader2 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -36,10 +35,19 @@ const Contact = () => {
     setErrors({});
     setSending(true);
     try {
-      const { data, error } = await supabase.functions.invoke("send-contact-email", {
-        body: { name: form.name, email: form.email, message: form.message },
+      // Call local Node.js server instead of Supabase function
+      const response = await fetch("http://localhost:3001/api/send-contact-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: form.name, email: form.email, message: form.message }),
       });
-      if (error) throw error;
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to send email");
+      }
+
       toast({ title: "Message sent!", description: "We'll get back to you soon." });
       setForm({ name: "", email: "", message: "" });
     } catch (err) {
