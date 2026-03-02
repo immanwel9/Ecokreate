@@ -35,8 +35,13 @@ const Contact = () => {
     setErrors({});
     setSending(true);
     try {
-      // Call local Node.js server instead of Supabase function
-      const response = await fetch("http://localhost:3001/api/send-contact-email", {
+      // Use Supabase function URL (works in production) or local server (development)
+      const isLocalhost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+      const apiUrl = isLocalhost 
+        ? "http://localhost:3001/api/send-contact-email"
+        : "https://evuuzhujmutmkhdebvvv.supabase.co/functions/v1/send-contact-email";
+      
+      const response = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: form.name, email: form.email, message: form.message }),
