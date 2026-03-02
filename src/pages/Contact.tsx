@@ -3,63 +3,24 @@ import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
-import { z } from "zod";
-import { ArrowRight, Loader2 } from "lucide-react";
+import { Mail } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
-const contactSchema = z.object({
-  name: z.string().trim().min(1, "Name is required").max(100),
-  email: z.string().trim().email("Please enter a valid email").max(255),
-  message: z.string().trim().min(1, "Message is required").max(1000),
-});
-
 const Contact = () => {
-  const { toast } = useToast();
   const [form, setForm] = useState({ name: "", email: "", message: "" });
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [sending, setSending] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const result = contactSchema.safeParse(form);
-    if (!result.success) {
-      const fieldErrors: Record<string, string> = {};
-      result.error.errors.forEach((err) => {
-        if (err.path[0]) fieldErrors[err.path[0] as string] = err.message;
-      });
-      setErrors(fieldErrors);
-      return;
-    }
-    setErrors({});
-    setSending(true);
-    try {
-      // Use Supabase function URL (works in production) or local server (development)
-      const isLocalhost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-      const apiUrl = isLocalhost 
-        ? "http://localhost:3001/api/send-contact-email"
-        : "https://evuuzhujmutmkhdebvvv.supabase.co/functions/v1/send-contact-email";
-      
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: form.name, email: form.email, message: form.message }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to send email");
-      }
-
-      toast({ title: "Message sent!", description: "We'll get back to you soon." });
-      setForm({ name: "", email: "", message: "" });
-    } catch (err) {
-      toast({ title: "Failed to send", description: "Please try again later.", variant: "destructive" });
-    } finally {
-      setSending(false);
-    }
+    
+    // Create mailto link with form data
+    const subject = encodeURIComponent(`Website Inquiry from ${form.name}`);
+    const body = encodeURIComponent(
+      `Name: ${form.name}\nEmail: ${form.email}\n\nMessage:\n${form.message}`
+    );
+    
+    // Open email client
+    window.location.href = `mailto:immanwel@ecokreate.com?subject=${subject}&body=${body}`;
   };
 
   return (
@@ -96,18 +57,19 @@ const Contact = () => {
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   className="bg-card border-border h-12"
+                  required
                 />
-                {errors.name && <p className="text-destructive text-xs mt-1">{errors.name}</p>}
               </div>
               <div>
                 <label className="block text-xs tracking-widest uppercase text-muted-foreground mb-2">Email</label>
                 <Input
                   placeholder="jane@company.com"
+                  type="email"
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                   className="bg-card border-border h-12"
+                  required
                 />
-                {errors.email && <p className="text-destructive text-xs mt-1">{errors.email}</p>}
               </div>
             </div>
 
@@ -119,13 +81,13 @@ const Contact = () => {
                 value={form.message}
                 onChange={(e) => setForm({ ...form, message: e.target.value })}
                 className="bg-card border-border resize-y"
+                required
               />
-              {errors.message && <p className="text-destructive text-xs mt-1">{errors.message}</p>}
             </div>
 
-            <Button type="submit" className="rounded-full px-8 gap-2" disabled={sending}>
-              {sending ? <Loader2 size={16} className="animate-spin" /> : <ArrowRight size={16} />}
-              {sending ? "Sending..." : "Send message"}
+            <Button type="submit" className="rounded-full px-8 gap-2">
+              <Mail size={16} />
+              Send via Email
             </Button>
           </motion.form>
         </div>
@@ -136,3 +98,4 @@ const Contact = () => {
 };
 
 export default Contact;
+
