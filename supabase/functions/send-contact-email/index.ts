@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { SmtpClient } from "https://deno.land/x/smtp/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -21,37 +22,37 @@ serve(async (req) => {
       );
     }
 
-    const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
-    if (!RESEND_API_KEY) {
-      throw new Error("RESEND_API_KEY is not configured");
+    // SMTP configuration from environment variables
+    const SMTP_HOST = Deno.env.get("SMTP_HOST") || "mail.privateemail.com";
+    const SMTP_PORT = parseInt(Deno.env.get("SMTP_PORT") || "465", 10);
+    const SMTP_USER = Deno.env.get("SMTP_USER");
+    const SMTP_PASS = Deno.env.get("SMTP_PASS");
+
+    if (!SMTP_USER || !SMTP_PASS) {
+      throw new Error("SMTP_USER and SMTP_PASS must be set in environment");
     }
 
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${RESEND_API_KEY}`,
-      },
-      body: JSON.stringify({
-        from: "Ecokreate <noreply@ecokreate.com>",
-        to: ["immanwel@ecokreate.com"],
-        subject: `New Contact Form Message from ${name}`,
-        html: `
-          <h2>New Contact Form Submission</h2>
-          <p><strong>Name:</strong> ${name}</p>
-          <p><strong>Email:</strong> ${email}</p>
-          <p><strong>Message:</strong></p>
-          <p>${message}</p>
-        `,
-        reply_to: email,
-      }),
+    const client = new SmtpClient();
+    await client.connect({
+      hostname: SMTP_HOST,
+      port: SMTP_PORT,
+      username: SMTP_USER,
+      password: SMTP_PASS,
+      secure: SMTP_PORT === 465,
     });
 
-    const data = await res.json();
+    await client.send({
+      from: SMTP_USER,
+      to: "immanwel@ecokreate.com",
+      subject: "New Website Contact Form Submission",
+      content: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
+      // reply-to header ensures inbox reply opens visitor address
+      headers: {
+        "Reply-To": email,
+      },
+    });
 
-    if (!res.ok) {
-      throw new Error(`Resend API error [${res.status}]: ${JSON.stringify(data)}`);
-    }
+    await client.close();
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
