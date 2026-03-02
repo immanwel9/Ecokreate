@@ -6,102 +6,6 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-// Simple SMTP client implementation
-async function sendEmailViaSMTP(
-  from: string,
-  to: string,
-  replyTo: string,
-  subject: string,
-  body: string,
-  smtpHost: string,
-  smtpPort: number,
-  username: string,
-  password: string
-): Promise<void> {
-  console.log(`Connecting to ${smtpHost}:${smtpPort}`);
-
-  // Create TLS connection
-  const conn = await Deno.connect({
-    hostname: smtpHost,
-    port: smtpPort,
-  });
-
-  const encoder = new TextEncoder();
-  const decoder = new TextDecoder();
-
-  // Read server greeting
-  let response = await readResponse(conn, decoder);
-  console.log("Server greeting:", response);
-
-  if (!response.includes("220")) {
-    throw new Error(`Unexpected server response: ${response}`);
-  }
-
-  // Send EHLO
-  await sendCommand(conn, encoder, "EHLO mail.ecokreate.com");
-  response = await readResponse(conn, decoder);
-  console.log("EHLO response:", response);
-
-  // AUTH LOGIN
-  await sendCommand(conn, encoder, "AUTH LOGIN");
-  response = await readResponse(conn, decoder);
-  console.log("AUTH LOGIN response:", response);
-
-  // Send username (base64)
-  const usernameB64 = btoa(username);
-  await sendCommand(conn, encoder, usernameB64);
-  response = await readResponse(conn, decoder);
-  console.log("Username response:", response);
-
-  // Send password (base64)
-  const passwordB64 = btoa(password);
-  await sendCommand(conn, encoder, passwordB64);
-  response = await readResponse(conn, decoder);
-  console.log("Password response:", response);
-
-  // MAIL FROM
-  await sendCommand(conn, encoder, `MAIL FROM:<${from}>`);
-  response = await readResponse(conn, decoder);
-  console.log("MAIL FROM response:", response);
-
-  // RCPT TO
-  await sendCommand(conn, encoder, `RCPT TO:<${to}>`);
-  response = await readResponse(conn, decoder);
-  console.log("RCPT TO response:", response);
-
-  // DATA
-  await sendCommand(conn, encoder, "DATA");
-  response = await readResponse(conn, decoder);
-  console.log("DATA response:", response);
-
-  // Build email
-  const emailContent = `From: ${from}\r\nTo: ${to}\r\nReply-To: ${replyTo}\r\nSubject: ${subject}\r\nContent-Type: text/plain; charset=UTF-8\r\n\r\n${body}\r\n.`;
-
-  await sendCommand(conn, encoder, emailContent);
-  response = await readResponse(conn, decoder);
-  console.log("Email sent response:", response);
-
-  // QUIT
-  await sendCommand(conn, encoder, "QUIT");
-  response = await readResponse(conn, decoder);
-  console.log("QUIT response:", response);
-
-  conn.close();
-}
-
-async function sendCommand(conn: Deno.Conn, encoder: TextEncoder, cmd: string): Promise<void> {
-  await conn.writeAll(encoder.encode(cmd + "\r\n"));
-}
-
-async function readResponse(conn: Deno.Conn, decoder: TextDecoder): Promise<string> {
-  const buf = new Uint8Array(1024);
-  const bytesRead = await conn.read(buf);
-  if (bytesRead === null) {
-    throw new Error("Connection closed");
-  }
-  return decoder.decode(buf.slice(0, bytesRead));
-}
-
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -123,7 +27,7 @@ serve(async (req) => {
 
     // SMTP configuration
     const SMTP_HOST = Deno.env.get("SMTP_HOST") || "mail.privateemail.com";
-    const SMTP_PORT_STR = Deno.env.get("SMTP_PORT") || "465";
+    const SMTP_PORT_STR = Deno.env.get("SMTP_PORT") || "587";
     const SMTP_USER = Deno.env.get("SMTP_USER");
     const SMTP_PASS = Deno.env.get("SMTP_PASS");
 
@@ -136,20 +40,95 @@ serve(async (req) => {
       throw new Error("SMTP_USER and SMTP_PASS environment variables are required");
     }
 
-    // Send email
-    const emailBody = `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`;
+    // Connect to SMTP server (port 587 - TLS on submit)
+    console.log("Connecting to SMTP server...");
+    const conn = await Deno.connect({
+      hostname: SMTP_HOST,
+      port: SMTP_PORT,
+    });
+
+    const encoder = new TextEncoder();
+    const decoder = new TextDecoder();
+
+    // Helper functions
+    const sendCommand = async (cmd: string): Promise<void> => {
+      console.log(`→ ${cmd}`);
+      await conn.writeAll(encoder.encode(cmd + "\r\n"));
+    };
+
+    const readResponse = async (): Promise<string> => {
+      const buf = new Uint8Array(1024);
+      const n = await conn.read(buf);
+      if (n === null) throw new Error("Connection closed");
+      const response = decoder.decode(buf.slice(0, n));
+      console.log(`← ${response.trim()}`);
+      return response;
+    };
+
+    // Read greeting
+    let response = await readResponse();
+    if (!response.includes("220")) {
+      throw new Error(`SMTP server error: ${response}`);
+    }
+
+    // Send EHLO
+    await sendCommand("EHLO mail.ecokreate.com");
+    response = await readResponse();
+
+    // STARTTLS
+    await sendCommand("STARTTLS");
+    response = await readResponse();
+    if (!response.includes("220")) {
+      throw new Error(`STARTTLS failed: ${response}`);
+    }
+
+    // Upgrade connection to TLS
+    console.log("Upgrading to TLS...");
+    const tlsConn = await Deno.startTls(conn, { hostname: SMTP_HOST });
+
+    // Send EHLO again after TLS
+    await sendCommand.call({ writeAll: (data: Uint8Array) => tlsConn.writeAll(data) }, "EHLO mail.ecokreate.com");
     
-    await sendEmailViaSMTP(
-      SMTP_USER,
-      "immanwel@ecokreate.com",
-      email,
-      "New Website Contact Form Submission",
-      emailBody,
-      SMTP_HOST,
-      SMTP_PORT,
-      SMTP_USER,
-      SMTP_PASS
-    );
+    // Login
+    console.log("Authenticating...");
+    await sendCommand("AUTH LOGIN");
+    response = await readResponse();
+
+    // Username (base64)
+    const usernameB64 = btoa(SMTP_USER);
+    await sendCommand(usernameB64);
+    response = await readResponse();
+
+    // Password (base64)
+    const passwordB64 = btoa(SMTP_PASS);
+    await sendCommand(passwordB64);
+    response = await readResponse();
+    if (!response.includes("235")) {
+      throw new Error(`AUTH failed: ${response}`);
+    }
+
+    // Send email
+    console.log("Sending email...");
+    await sendCommand(`MAIL FROM:<${SMTP_USER}>`);
+    response = await readResponse();
+
+    await sendCommand(`RCPT TO:<immanwel@ecokreate.com>`);
+    response = await readResponse();
+
+    await sendCommand("DATA");
+    response = await readResponse();
+
+    // Build email
+    const emailContent = `From: ${SMTP_USER}\r\nTo: immanwel@ecokreate.com\r\nReply-To: ${email}\r\nSubject: New Website Contact Form Submission\r\nContent-Type: text/plain; charset=UTF-8\r\n\r\nName: ${name}\r\nEmail: ${email}\r\n\r\nMessage:\r\n${message}`;
+
+    await sendCommand(emailContent);
+    await sendCommand(".");
+    response = await readResponse();
+
+    // Quit
+    await sendCommand("QUIT");
+
+    conn.close();
 
     console.log("=== Email sent successfully ===");
 
@@ -161,7 +140,6 @@ serve(async (req) => {
     console.error("=== ERROR ===");
     console.error(error);
     const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error(`Error: ${errorMessage}`);
 
     return new Response(
       JSON.stringify({ success: false, error: errorMessage }),
