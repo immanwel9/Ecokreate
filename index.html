@@ -19,10 +19,10 @@
 
   <body>
     <!-- Hidden form for Netlify form detection (required for SPA sites) -->
-    <form name="contact" data-netlify="true" netlify-honeypot="bot-field" hidden>
-      <input type="hidden" name="form-name" value="contact" />
-      <input type="text" name="name" />
-      <input type="email" name="email" />
+    <form name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden>
+      <input name="bot-field" />
+      <input name="name" />
+      <input name="email" />
       <textarea name="message"></textarea>
     </form>
     <div id="root"></div>
