@@ -23,7 +23,10 @@ const ContactSection = () => {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams(formData as any).toString(),
     })
-      .then(() => {
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Form submission failed. Please try again.");
+        }
         setIsSubmitted(true);
         setIsSubmitting(false);
       })

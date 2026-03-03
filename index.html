@@ -18,6 +18,12 @@
   </head>
 
   <body>
+    <!-- Hidden form for Netlify form detection (required for SPA/React sites) -->
+    <form name="contact" method="POST" data-netlify="true" hidden>
+      <input name="name" />
+      <input name="email" />
+      <textarea name="message"></textarea>
+    </form>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
