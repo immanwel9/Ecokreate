@@ -18,12 +18,21 @@ const ContactSection = () => {
     const form = event.currentTarget;
     const formData = new FormData(form);
 
-    fetch("/", {
+    fetch("/api/contact", {
       method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams(formData as any).toString(),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: formData.get("name"),
+        email: formData.get("email"),
+        message: formData.get("message"),
+      }),
     })
-      .then(() => {
+      .then((res) => {
+        if (!res.ok) {
+          return res.json().then((data) => {
+            throw new Error(data.error || "Submission failed.");
+          });
+        }
         setIsSubmitted(true);
         setIsSubmitting(false);
       })
@@ -83,17 +92,12 @@ const ContactSection = () => {
         </motion.div>
 
         <motion.form
-          name="contact"
-          method="POST"
-          data-netlify="true"
           onSubmit={handleSubmit}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.15 }}
           className="space-y-6"
         >
-          <input type="hidden" name="form-name" value="contact" />
-          
           <div>
             <label htmlFor="name" className="block text-xs tracking-widest uppercase text-muted-foreground mb-2">Name</label>
             <Input
