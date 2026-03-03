@@ -89,6 +89,7 @@ const ContactSection = () => {
         </motion.div>
 
         <motion.form
+          action="/"
           name="contact"
           method="POST"
           data-netlify="true"
