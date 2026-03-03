@@ -23,7 +23,10 @@ const ContactSection = () => {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams(formData as any).toString(),
     })
-      .then(() => {
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Form submission failed. Please try again.");
+        }
         setIsSubmitted(true);
         setIsSubmitting(false);
       })
@@ -86,6 +89,7 @@ const ContactSection = () => {
           name="contact"
           method="POST"
           data-netlify="true"
+          netlify-honeypot="bot-field"
           onSubmit={handleSubmit}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -93,7 +97,12 @@ const ContactSection = () => {
           className="space-y-6"
         >
           <input type="hidden" name="form-name" value="contact" />
-          
+          <p hidden>
+            <label>
+              Don't fill this out: <input name="bot-field" />
+            </label>
+          </p>
+
           <div>
             <label htmlFor="name" className="block text-xs tracking-widest uppercase text-muted-foreground mb-2">Name</label>
             <Input
