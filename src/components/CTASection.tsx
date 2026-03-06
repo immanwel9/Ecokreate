@@ -1,10 +1,12 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 
 const CTASection = () => {
-  const navigate = useNavigate();
+  const scrollToContact = () => {
+    const el = document.getElementById("contact");
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
     <section className="py-32 px-6">
@@ -28,7 +30,7 @@ const CTASection = () => {
             size="lg"
             variant="secondary"
             className="rounded-full px-8 gap-2 relative"
-            onClick={() => navigate("/contact")}
+            onClick={scrollToContact}
           >
             Get in touch
             <ArrowRight size={16} />
