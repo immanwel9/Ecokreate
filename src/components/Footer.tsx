@@ -26,13 +26,10 @@ const Footer = () => {
                 <button
                   key={link}
                   onClick={() => {
-                    if (link === "Contact") navigate("/contact");
-                    else {
-                      navigate("/");
-                      setTimeout(() => {
-                        document.getElementById(link.toLowerCase())?.scrollIntoView({ behavior: "smooth" });
-                      }, 100);
-                    }
+                    navigate("/");
+                    setTimeout(() => {
+                      document.getElementById(link.toLowerCase())?.scrollIntoView({ behavior: "smooth" });
+                    }, 100);
                   }}
                   className="block text-sm text-foreground/70 hover:text-foreground transition-colors"
                 >
